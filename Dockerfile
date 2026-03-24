@@ -10,21 +10,21 @@ RUN apt-get update && apt-get install -y curl gnupg apt-utils && \
     libexpat1-dev libusb-dev libncurses5-dev cmake help2man
 
 # Install Verilator
-RUN git clone https://github.com/verilator/verilator && cd verilator && git checkout v4.106 && autoconf && ./configure && make -j 200 && make install
+RUN git clone https://github.com/verilator/verilator && cd verilator && git checkout v4.106 && autoconf && ./configure && make -j `nproc` && make install
 
 # Install RISC-V toolchain
 RUN apt-get install -y autoconf automake autotools-dev curl python3 libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build
 ENV RISCV="/opt/riscv"
 RUN git clone https://github.com/riscv/riscv-gnu-toolchain
-RUN cd riscv-gnu-toolchain && ./configure --prefix=/opt/riscv --enable-multilib && make -j 200
+RUN cd riscv-gnu-toolchain && ./configure --prefix=/opt/riscv --enable-multilib && make -j `nproc`
 
 # Install spike
 RUN git clone https://github.com/riscv-software-src/riscv-isa-sim.git
-RUN cd riscv-isa-sim && mkdir build && cd build && ../configure --prefix=$RISCV && make -j 200 && make install
+RUN cd riscv-isa-sim && mkdir build && cd build && ../configure --prefix=$RISCV && make -j `nproc` && make install
 
 # Install elf2hex
 RUN git clone https://github.com/sifive/elf2hex.git
-RUN cd elf2hex && autoreconf -i && ./configure --target=riscv64-unknown-elf && make -j 200 && make install
+RUN cd elf2hex && autoreconf -i && ./configure --target=riscv64-unknown-elf && make -j `nproc` && make install
 
 # Install cocotb
 RUN pip3 install cocotb
